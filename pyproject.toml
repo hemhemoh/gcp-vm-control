@@ -1,7 +1,7 @@
 [project]
 name = "gcp-vm-control"
 version = "0.1.0"
-description = "Add your description here"
+description = "GCP-VM-control helps check the availability of already existing GCP VMs and turn them on and off as required by the user"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
