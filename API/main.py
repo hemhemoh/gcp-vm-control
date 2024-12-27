@@ -12,3 +12,7 @@ def start_server(status_code: int):
         return {"status": "failure", "message": "Failed to start virtual machine"}
     elif 200 <= status_code < 300:
         return {"status": "success", "message": "Starting virtual machine"}
+    
+@app.post("/end-server")
+def stop_server():
+        return {"status": "success", "message": "Stoping virtual machine"}
