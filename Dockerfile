@@ -7,6 +7,8 @@ ENV PORT=$PORT
 COPY . /gcp-vm-control
 WORKDIR /gcp-vm-control
 
+RUN echo "$GCLOUD_SECRET" > slt_auth_keys.json
+
 RUN uv sync
 
 EXPOSE $PORT
