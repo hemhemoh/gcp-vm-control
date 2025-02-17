@@ -12,7 +12,7 @@ RUN echo "${GCLOUD_SECRET}"
 
 RUN uv sync
 
-EXPOSE $
+EXPOSE $PORT
 ENTRYPOINT ["sh", "-c", "uv run uvicorn api.main:app --host 0.0.0.0 --port ${PORT}"]
 # ENTRYPOINT ["sh", "-c", "printf \"%s\" \"$GCLOUD_SECRET\" > /gcp-vm-control/slt_auth_keys.json && uv run uvicorn api.main:app --host 0.0.0.0 --port ${PORT}"]
 CMD ["--reload"]
