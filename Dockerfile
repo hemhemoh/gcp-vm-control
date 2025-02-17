@@ -7,7 +7,7 @@ ENV PORT=$PORT
 COPY . /gcp-vm-control
 WORKDIR /gcp-vm-control
 
-RUN echo "${GCLOUD_SECRET}"
+RUN echo "Hello ${GCLOUD_SECRET} ayeraye"
 # > ./slt_auth_keys.json
 
 RUN uv sync
