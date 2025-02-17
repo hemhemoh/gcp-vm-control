@@ -18,3 +18,4 @@ ENTRYPOINT ["sh", "-c", "uv run uvicorn api.main:app --host 0.0.0.0 --port ${POR
 CMD ["--reload"]
 
 
+
