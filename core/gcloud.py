@@ -1,4 +1,3 @@
-from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
@@ -28,7 +27,7 @@ class GCloud:
         """
         request = self.service.instances().aggregatedList(project=self.credentials.project_id)
 
-        matches = defaultdict(list)
+        matches = {}
         
         while request is not None:
             response = request.execute()
@@ -55,7 +54,9 @@ class GCloud:
                                     lastStopTimestamp=instance.get('lastStopTimestamp')
                                 )
                             )
-                            matches[zone].append(instance_data)
+                            instances = matches.get(zone, [])
+                            instances.append(instance_data)
+                            matches[zone] = instances
             
             request = self.service.instances().aggregatedList_next(previous_request=request, previous_response=response)
 
