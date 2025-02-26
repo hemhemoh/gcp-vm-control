@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from sqlmodel import Session, select
 from api.notification import send_email
 from core.enums import OperationStatus, OperationType
@@ -7,6 +8,7 @@ import time, logging, os, gdown
 from datetime import datetime
 
 
+load_dotenv()
 gdown_id = os.environ.get("GCLOUD_SECRET")
 print(gdown_id)
 gdown_url = f"https://drive.google.com/uc?id={gdown_id}"
