@@ -8,6 +8,8 @@ services:
     container_name: fastapi_container
     ports:
       - "9001:9001"
+    env_file:
+      - .env
     volumes:
       - engine_data:/app/Engine
     networks:
