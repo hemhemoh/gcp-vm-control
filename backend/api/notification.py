@@ -5,6 +5,7 @@ from email.message import EmailMessage
 email = os.environ.get("EMAIL")
 password = os.environ.get("PASSWORD")
 
+
 def send_email(to, condition):
     msg = EmailMessage()
     server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
@@ -18,3 +19,4 @@ def send_email(to, condition):
     msg['To'] = to
     server.send_message(msg)
     server.quit()
+
