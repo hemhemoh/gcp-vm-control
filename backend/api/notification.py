@@ -1,9 +1,6 @@
 import smtplib, os
 from core.enums import OperationType
 from email.message import EmailMessage
-from dotenv import load_dotenv
-
-load_dotenv()
 
 email = os.environ.get("EMAIL")
 password = os.environ.get("PASSWORD")

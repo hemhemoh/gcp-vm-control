@@ -6,12 +6,17 @@ from core.enums import OperationType
 from api.schema import create_db_and_tables, ParentJob, ParentJobPublic, get_session
 from core.gcloud import GCloud
 import logging, gdown, os
+from dotenv import load_dotenv
 
 class RequestBody(BaseModel):
     zone: str
     instance_name: str
     
-    
+load_dotenv()
+gdown_id = os.environ.get("GCLOUD_SECRET")
+gdown_url = f"https://drive.google.com/uc?id={gdown_id}"
+gdown.download(gdown_url, "slt_auth_keys.json", quiet=False)
+
 app = FastAPI()
 
 # gcloud = GCloud(credential_path=("slt_auth_keys.json"))
