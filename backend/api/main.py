@@ -14,7 +14,7 @@ class RequestBody(BaseModel):
 app = FastAPI()
 gdown_id = os.environ.get("GCLOUD_SECRET")
 gdown_url = f"https://drive.google.com/uc?id={gdown_id}"
-gdown.download(gdown_url, quiet=False)
+gdown.download(gdown_url, "slt_auth_keys.json", quiet=False)
 
 gcloud = GCloud(credential_path=("slt_auth_keys.json"))
 
