@@ -9,9 +9,7 @@ WORKDIR /gcp-vm-control
 
 RUN uv sync
 
-ARG GCLOUD_SECRET
-
-RUN uv run gdown --id "$GCLOUD_SECRET"
+# RUN uv run gdown --id "$GCLOUD_SECRET"
 
 EXPOSE $PORT
 ENTRYPOINT ["sh", "-c", "uv run uvicorn api.main:app --host 0.0.0.0 --port ${PORT}"]
