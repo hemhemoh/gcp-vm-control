@@ -4,7 +4,7 @@ from email.message import EmailMessage
 
 email = os.environ.get("EMAIL")
 password = os.environ.get("PASSWORD")
-
+print(email, password)
 
 def send_email(to, condition):
     msg = EmailMessage()
