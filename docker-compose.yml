@@ -1,0 +1,15 @@
+services:
+  gcp-vm-control:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9001:9001"
+    volumes:
+      - engine_data:/app/Engine
+volumes:
+  engine_data:
+   
+
+
+# docker-compose -f docker-compose.yml up --build
