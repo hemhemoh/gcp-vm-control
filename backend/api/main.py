@@ -17,6 +17,7 @@ load_dotenv()
 app = FastAPI()
 gdown_id = os.environ.get("GCLOUD_SECRET")
 gdown_url = f"https://drive.google.com/uc?id={gdown_id}"
+print(gdown_url)
 gdown.download(gdown_url, "slt_auth_keys.json", quiet=False)
 
 gcloud = GCloud(credential_path=("slt_auth_keys.json"))
