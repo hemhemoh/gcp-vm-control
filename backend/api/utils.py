@@ -15,9 +15,9 @@ gdown.download(gdown_url, "slt_auth_keys.json", quiet=False)
 
 gcloud = GCloud(credential_path=("slt_auth_keys.json"))
 
-email = os.environ.get("EMAIL")
+receiver = os.environ.get("RECEIVER")
+sender = os.environ.get("SENDER")
 password = os.environ.get("PASSWORD")
-print(email, password)
 
 def child_retry(zone, job, session: Session):
     """Retries the operation and logs the attempt in the database."""
@@ -59,7 +59,7 @@ def check_operation_status(zone, operation_name, job, no_of_retries=3):
                 time.sleep(3)
 
             elif operation_data.status == OperationStatus.DONE:
-                send_email(email, operation_data.type, password)
+                send_email(sender, receiver, OperationType.STOP, password)
                 parentjob = session.exec(select(ParentJob).where((ParentJob.id == job.id) & (ParentJob.zone == zone))).first()
                 if parentjob.type == operation_data.type:
                     parentjob.status = operation_data.status
