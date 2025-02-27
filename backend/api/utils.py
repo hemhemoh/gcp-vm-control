@@ -15,6 +15,9 @@ gdown.download(gdown_url, "slt_auth_keys.json", quiet=False)
 
 gcloud = GCloud(credential_path=("slt_auth_keys.json"))
 
+email = os.environ.get("EMAIL")
+password = os.environ.get("PASSWORD")
+
 def child_retry(zone, job, session: Session):
     """Retries the operation and logs the attempt in the database."""
     logging.info(f"Retrying {job.type} operation for ParentJob {job.id}")
