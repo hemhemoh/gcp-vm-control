@@ -9,4 +9,8 @@ dependencies = [
     "google-api-python-client>=2.159.0",
     "google-auth>=2.37.0",
     "gdown>=4.6.1",
+    "pydantic>=2.10.4",
+    "sqlalchemy>=2.0.38",
+    "sqlmodel>=0.0.22",
+    "uvicorn>=0.34.0",
 ]

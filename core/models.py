@@ -20,7 +20,6 @@ class InstanceData(BaseModel):
     machineType: str
     timestamps: InstanceTimestamps
 
-
 class OperationTimestamps(BaseModel):
     insertTime: str
     startTime: Optional[str]
