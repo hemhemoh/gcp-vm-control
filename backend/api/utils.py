@@ -1,5 +1,5 @@
 from sqlmodel import Session, select
-from notification import send_email
+from api.notification import send_email
 from core.enums import OperationStatus, OperationType
 from api.schema import ParentJob, engine, ChildJob
 from core.gcloud import GCloud
