@@ -1,3 +1,4 @@
+import logging, gdown, os
 from dotenv import load_dotenv
 load_dotenv()
 gdown_id = os.environ.get("GCLOUD_SECRET")
@@ -11,7 +12,6 @@ from api.utils import check_operation_status
 from core.enums import OperationType
 from api.schema import create_db_and_tables, ParentJob, ParentJobPublic, get_session
 from core.gcloud import GCloud
-import logging, gdown, os
 
 class RequestBody(BaseModel):
     zone: str
