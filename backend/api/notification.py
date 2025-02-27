@@ -18,3 +18,4 @@ def send_email(to, condition):
     msg['To'] = to
     server.send_message(msg)
     server.quit()
+

@@ -1,15 +1,39 @@
+version: "3.8"
+
 services:
-  gcp-vm-control:
+  backend:
     build: 
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
+    container_name: fastapi_container
     ports:
       - "9001:9001"
+    env_file:
+      - .env
     volumes:
       - engine_data:/app/Engine
+    networks:
+      - my_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: streamlit_container
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    networks:
+      - my_network
+    environment:
+      - BACKEND_URL=http://backend:9001  # Tell Streamlit to connect to FastAPI
+
 volumes:
   engine_data:
-   
+
+networks:
+  my_network:
+    driver: bridge
 
 
-# docker-compose -f docker-compose.yml up --build

@@ -1,17 +1,18 @@
+import logging
 from fastapi import FastAPI, BackgroundTasks, Depends
 from pydantic import BaseModel
 from sqlmodel import Session
-from api.utils import check_operation_status
+from api.utils import check_operation_status, gcloud
 from core.enums import OperationType
 from api.schema import create_db_and_tables, ParentJob, ParentJobPublic, get_session
 from core.gcloud import GCloud
-import logging
 
 class RequestBody(BaseModel):
     zone: str
     instance_name: str
-    
+
 app = FastAPI()
+
 gcloud = GCloud(credential_path=("slt_auth_keys.json"))
 
 logging.basicConfig(filename="app.log",level=logging.INFO,

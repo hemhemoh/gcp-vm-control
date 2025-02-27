@@ -3,8 +3,16 @@ from api.notification import send_email
 from core.enums import OperationStatus, OperationType
 from api.schema import ParentJob, engine, ChildJob
 from core.gcloud import GCloud
-import time, logging
+import time, logging, gdown, os
 from datetime import datetime
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+gdown_id = os.environ.get("GCLOUD_SECRET")
+gdown_url = f"https://drive.google.com/uc?id={gdown_id}"
+gdown.download(gdown_url, "slt_auth_keys.json", quiet=False)
 
 gcloud = GCloud(credential_path=("slt_auth_keys.json"))
 

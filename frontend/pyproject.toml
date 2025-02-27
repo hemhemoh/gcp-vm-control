@@ -1,0 +1,10 @@
+[project]
+name = "streamlit-frontend"
+version = "0.1.0"
+description = "Streamlit frontend for GCP VM control"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "streamlit==1.40.1",
+    "requests>=2.32.3"
+]
