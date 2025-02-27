@@ -4,7 +4,7 @@ from email.message import EmailMessage
 
 def send_email(sender, receiver, condition, password):
     msg = EmailMessage()
-    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    server = smtplib.SMTP_SSL('smtp.gmail.com', 587)
     server.login(sender, password)
     if condition == OperationType.START:
         msg.set_content("Server has been started")
