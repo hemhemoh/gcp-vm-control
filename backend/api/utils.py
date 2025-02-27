@@ -7,9 +7,6 @@ import time, logging, gdown, os
 from datetime import datetime
 from dotenv import load_dotenv
 
-email = os.environ.get("EMAIL")
-password = os.environ.get("PASSWORD")
-
 load_dotenv()
 
 gdown_id = os.environ.get("GCLOUD_SECRET")
