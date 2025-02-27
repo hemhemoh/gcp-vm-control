@@ -2,10 +2,10 @@ import smtplib, os
 from core.enums import OperationType
 from email.message import EmailMessage
 
-def send_email(to, condition, email, password):
+def send_email(to, condition, password):
     msg = EmailMessage()
     server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    server.login(email, password)
+    server.login(to, password)
     if condition == OperationType.START:
         msg.set_content("Server has been started")
     elif condition == OperationType.STOP:
