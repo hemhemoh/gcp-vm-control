@@ -1,4 +1,4 @@
-import smtplib, os
+import smtplib
 from core.enums import OperationType
 from email.message import EmailMessage
 

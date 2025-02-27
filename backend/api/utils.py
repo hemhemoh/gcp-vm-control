@@ -1,5 +1,5 @@
 from sqlmodel import Session, select
-from api.notification import send_email
+from notification import send_email
 from core.enums import OperationStatus, OperationType
 from api.schema import ParentJob, engine, ChildJob
 from core.gcloud import GCloud
@@ -17,6 +17,7 @@ gcloud = GCloud(credential_path=("slt_auth_keys.json"))
 
 email = os.environ.get("EMAIL")
 password = os.environ.get("PASSWORD")
+print(email, password)
 
 def child_retry(zone, job, session: Session):
     """Retries the operation and logs the attempt in the database."""
