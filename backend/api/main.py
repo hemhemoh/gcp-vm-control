@@ -1,14 +1,8 @@
-import logging, gdown, os
-from dotenv import load_dotenv
-load_dotenv()
-gdown_id = os.environ.get("GCLOUD_SECRET")
-gdown_url = f"https://drive.google.com/uc?id={gdown_id}"
-gdown.download(gdown_url, "slt_auth_keys.json", quiet=False)
-
+import logging
 from fastapi import FastAPI, BackgroundTasks, Depends
 from pydantic import BaseModel
 from sqlmodel import Session
-from api.utils import check_operation_status
+from api.utils import check_operation_status, gcloud
 from core.enums import OperationType
 from api.schema import create_db_and_tables, ParentJob, ParentJobPublic, get_session
 from core.gcloud import GCloud
@@ -16,12 +10,10 @@ from core.gcloud import GCloud
 class RequestBody(BaseModel):
     zone: str
     instance_name: str
-    
-
 
 app = FastAPI()
 
-# gcloud = GCloud(credential_path=("slt_auth_keys.json"))
+gcloud = GCloud(credential_path=("slt_auth_keys.json"))
 
 logging.basicConfig(filename="app.log",level=logging.INFO,
                 format="%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
