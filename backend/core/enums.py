@@ -6,7 +6,7 @@ class InstanceStatus(Enum):
     STOPPING = "STOPPING"
     TERMINATED = "TERMINATED"
     SUSPENDED = "SUSPENDED"
-    STARTING = "STARTING"
+    STARTING = "STAGING"
 
 
 class OperationStatus(Enum):

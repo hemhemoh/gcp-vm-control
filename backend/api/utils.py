@@ -59,7 +59,8 @@ def check_operation_status(zone, operation_name, job, no_of_retries=3):
                 time.sleep(3)
 
             elif operation_data.status == OperationStatus.DONE:
-                send_email(sender, receiver, OperationType.STOP, password)
+                print("CONFIRMED", operation_data.type)
+                send_email(sender, receiver, operation_data.type, password)
                 parentjob = session.exec(select(ParentJob).where((ParentJob.id == job.id) & (ParentJob.zone == zone))).first()
                 if parentjob.type == operation_data.type:
                     parentjob.status = operation_data.status

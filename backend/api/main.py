@@ -13,8 +13,6 @@ class RequestBody(BaseModel):
 
 app = FastAPI()
 
-gcloud = GCloud(credential_path=("slt_auth_keys.json"))
-
 logging.basicConfig(filename="app.log",level=logging.INFO,
                 format="%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 
@@ -29,8 +27,6 @@ def Hello():
 @app.post("/start-server", response_model=ParentJobPublic)
 def start_server(body: RequestBody, background_tasks: BackgroundTasks, session: Session = Depends(get_session)):
     operation = gcloud.start_instance(body.zone, body.instance_name)
-    print(operation.status)
-    print(type(operation.status))
     parentjob = ParentJob(name=body.instance_name, zone=body.zone,
                         status=operation.status, type=OperationType.START,
                         is_successful=False)
