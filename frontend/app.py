@@ -1,74 +1,100 @@
 import streamlit as st
 import requests
-import time , os
-
-# FastAPI Backend URL
-BACKEND_URL = os.environ.get("BACKEND_URL")
+import time, os
 
 st.title("Google Cloud Server Manager")
 
-# Initialize session state for refresh tracking
-if "refresh" not in st.session_state:
-    st.session_state.refresh = False
+if "auth_configured" not in st.session_state:
+    st.session_state.auth_configured = False
+if "receiver_email" not in st.session_state:
+    st.session_state.receiver_email = ""
 
-# Function to fetch list of servers with retry mechanism
-def fetch_servers(retries=3, delay=2):
-    for _ in range(retries):
-        response = requests.get(f"{BACKEND_URL}/list-server")
-        if response.status_code == 200:
-            return response.json()
-        time.sleep(delay)  # Wait before retrying
-    st.error("Failed to fetch server list after multiple attempts")
-    return []
+st.sidebar.header("Configuration")
 
-# Function to trigger UI refresh
-def trigger_refresh():
-    st.session_state.refresh = not st.session_state.refresh  # Toggle refresh state
+if st.sidebar.button("Reset Configuration"):
+    st.session_state.auth_configured = False
+    st.session_state.receiver_email = ""
+    st.sidebar.success("Configuration reset!")
+    st.rerun()
 
-# Display available servers
-st.subheader("Available Servers")
+BACKEND_URL = os.environ.get("BACKEND_URL")
 
-servers = fetch_servers()
+if not st.session_state.auth_configured:
+    st.subheader("Setup Required")
 
-if not servers:
-    st.write("No servers found.")
-else:
-    for server in servers:
-        instance_name = server["Instance Name"]
-        zone = server["Zone"]
-        status = server["Instance Status"]
+    uploaded_file = st.file_uploader("Upload Google Cloud Service Account JSON Key", type=['json'], help="Upload your Google Cloud service account credentials JSON file")
 
-        col1, col2, col3 = st.columns([3, 2, 2])
+    receiver_email = st.text_input("Receiver Email Address", placeholder="notifications@example.com", help="Email address to receive start/stop notifications")
+    
+    if uploaded_file is not None and receiver_email:
+        files = {"file": (uploaded_file.name, uploaded_file.getvalue())}
+        r = requests.post(f"{BACKEND_URL}/load_config", files=files, timeout=30)
+        st.session_state.receiver_email = receiver_email
+        st.session_state.auth_configured = True
+        st.success("Configuration saved!")
+    elif uploaded_file is not None:
+        st.warning("Please enter a receiver email address.")
+    elif receiver_email:
+        st.warning("Please upload your service account JSON file.")
 
-        with col1:
-            st.write(f"**{instance_name}** ({zone})")
+if st.session_state.auth_configured:
+    st.sidebar.success("Configuration Active")
+    st.sidebar.write(f"**Receiver:** {st.session_state.receiver_email}")
+    
+    def fetch_servers():
+        try:
+            response = requests.get(f"{BACKEND_URL}/list-server")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                error_detail = response.json().get("detail", "Unknown error")
+                st.error(f"Error: {error_detail}")
+                return []
+        except requests.exceptions.RequestException as e:
+            st.error(f"Connection error: {str(e)}")
+            return []    
+    st.subheader("Available Servers")
 
-        with col2:
-            st.write(f"Status: **{status}**")
+    servers = fetch_servers()
 
-        with col3:
-            if status.lower() == "terminated":  # If stopped, show "Start" button
-                if st.button(f"Start {instance_name}", key=f"start_{instance_name}"):
-                    request_body = {"zone": zone, "instance_name": instance_name}
-                    response = requests.post(f"{BACKEND_URL}/start-server", json=request_body)
-                    if response.status_code == 200:
-                        st.success(f"Started {instance_name}, refreshing...")
-                        time.sleep(3)  # Give time for GCloud to update
-                        trigger_refresh()  # Update UI
-                    else:
-                        st.error(f"Failed to start {instance_name}")
+    if not servers:
+        st.write("No servers found.")
+    else:
+        for server in servers:
+            instance_name = server["Instance Name"]
+            zone = server["Zone"]
+            status = server["Instance Status"]
 
-            elif status.lower() == "running":  # If running, show "Stop" button
-                if st.button(f"Stop {instance_name}", key=f"stop_{instance_name}"):
-                    request_body = {"zone": zone, "instance_name": instance_name}
-                    response = requests.post(f"{BACKEND_URL}/end-server", json=request_body)
-                    if response.status_code == 200:
-                        st.success(f"Stopped {instance_name}, refreshing...")
-                        time.sleep(3)  # Give time for GCloud to update
-                        trigger_refresh()  # Update UI
-                    else:
-                        st.error(f"Failed to stop {instance_name}")
+            col1, col2, col3 = st.columns([3, 2, 2])
 
-# Refresh button (alternative way to refresh)
-if st.button("Refresh Server List"):
-    trigger_refresh()
+            with col1:
+                st.write(f"**{instance_name}** ({zone})")
+                
+            with col2:
+                st.write(f"Status: **{status}**")
+
+            with col3:
+                if status.lower() == "terminated":
+                    if st.button(f"Start {instance_name}", key=f"start_{instance_name}"):
+                        request_body = {"zone": zone, "instance_name": instance_name,"receiver":receiver_email}
+                        response = requests.post(f"{BACKEND_URL}/start-server", json=request_body)
+                        if response.status_code == 200:
+                            st.success(f"Started {instance_name}")
+                            time.sleep(3)
+                            st.rerun()
+                        else:
+                            st.error(f"Failed to start {instance_name}")
+
+                elif status.lower() == "running":
+                    if st.button(f"Stop {instance_name}", key=f"stop_{instance_name}"):
+                        request_body = {"zone": zone, "instance_name": instance_name, "receiver":receiver_email}
+                        response = requests.post(f"{BACKEND_URL}/end-server", json=request_body)
+                        if response.status_code == 200:
+                            st.success(f"Stopped {instance_name}")
+                            time.sleep(3) 
+                            st.rerun()
+                        else:
+                            st.error(f"Failed to stop {instance_name}")
+
+    if st.button("Refresh Server List"):
+        st.rerun()

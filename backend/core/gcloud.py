@@ -1,12 +1,9 @@
 from pathlib import Path
 from typing import Dict, List, Optional, Union
-
 from googleapiclient import discovery
 from google.oauth2 import service_account
-
 from core.enums import InstanceStatus, OperationStatus, OperationType
 from core.models import OperationData, OperationTimestamps, InstanceData, InstanceTimestamps
-
 
 class GCloud:
     def __init__(self, credential_path: Union[str, Path]):

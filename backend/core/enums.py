@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class InstanceStatus(Enum):
     RUNNING = "RUNNING"
     STOPPING = "STOPPING"

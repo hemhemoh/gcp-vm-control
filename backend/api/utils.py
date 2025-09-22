@@ -2,24 +2,16 @@ from sqlmodel import Session, select
 from api.notification import send_email
 from core.enums import OperationStatus, OperationType
 from api.schema import ParentJob, engine, ChildJob
-from core.gcloud import GCloud
-import time, logging, gdown, os
+import time, logging, os
 from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
 
-gdown_id = os.environ.get("GCLOUD_SECRET")
-gdown_url = f"https://drive.google.com/uc?id={gdown_id}"
-gdown.download(gdown_url, "slt_auth_keys.json", quiet=False)
-
-gcloud = GCloud(credential_path=("slt_auth_keys.json"))
-
-receiver = os.environ.get("RECEIVER")
 sender = os.environ.get("SENDER")
 password = os.environ.get("PASSWORD")
 
-def child_retry(zone, job, session: Session):
+def child_retry(zone, job, gcloud, session: Session):
     """Retries the operation and logs the attempt in the database."""
     logging.info(f"Retrying {job.type} operation for ParentJob {job.id}")
 
@@ -32,8 +24,7 @@ def child_retry(zone, job, session: Session):
         return
 
     # Log retry attempt in the database
-    child_job = ChildJob(
-        parent_id=job.id,
+    child_job = ChildJob(parent_id=job.id,
         is_successful=False,
         request_time=datetime.fromisoformat(new_operation.timestamps.insertTime) if new_operation.timestamps.insertTime else None,
         start_time=datetime.fromisoformat(new_operation.timestamps.startTime) if new_operation.timestamps.startTime else None,
@@ -45,7 +36,7 @@ def child_retry(zone, job, session: Session):
 
     logging.info(f"Logged ChildJob {child_job.id} for retry of ParentJob {job.id}")
 
-def check_operation_status(zone, operation_name, job, no_of_retries=3):
+def check_operation_status(zone, gcloud, receiver, operation_name, job, no_of_retries=3):
     """Background task to monitor operation status, update the database, and trigger retries if needed."""
     session = Session(engine)
     retries = 0  
